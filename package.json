@@ -1,0 +1,61 @@
+{
+  "name": "lightningcss-build",
+  "version": "0.0.0-semantic-release",
+  "description": "Opinionated CSS build tool for libraries, powered by lightningcss",
+  "author": "Igor Danchenko",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "lightningcss-build": "bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "homepage": "https://github.com/igordanchenko/lightningcss-build",
+  "funding": "https://github.com/sponsors/igordanchenko",
+  "bugs": "https://github.com/igordanchenko/lightningcss-build/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/igordanchenko/lightningcss-build.git"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "lint": "eslint",
+    "test": "vitest run",
+    "ci": "npm-run-all lint test"
+  },
+  "dependencies": {
+    "browserslist": "^4.28.2",
+    "chokidar": "^5.0.0",
+    "lightningcss": "^1.32.0",
+    "picocolors": "^1.1.1",
+    "tinyglobby": "^0.2.16"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.2",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.2.1",
+    "globals": "^17.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "npm-run-all2": "^8.0.4",
+    "prettier": "^3.8.3",
+    "vitest": "^4.1.5"
+  },
+  "keywords": [
+    "css",
+    "build",
+    "lightningcss",
+    "lightning-css",
+    "bundler",
+    "minifier",
+    "browserslist",
+    "watcher",
+    "cli"
+  ]
+}

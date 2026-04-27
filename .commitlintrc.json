@@ -1,0 +1,6 @@
+{
+  "extends": ["@commitlint/config-conventional"],
+  "rules": {
+    "subject-exclamation-mark": [2, "never"]
+  }
+}

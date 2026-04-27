@@ -1,0 +1,55 @@
+name: Bug report
+description: Report a reproducible problem.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the issue you're experiencing.
+    validations:
+      required: true
+
+  - type: input
+    id: package-version
+    attributes:
+      label: lightningcss-build version
+      description: Output of `lightningcss-build -v`.
+      placeholder: e.g., 1.2.0
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node version
+      description: Output of `node -v`.
+      placeholder: e.g., v22.22.2
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: e.g., macOS 26.4.1
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: |
+        Provide the exact command or steps to reproduce, along with any relevant input files.
+        Keep it as small as possible.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-vs-actual
+    attributes:
+      label: Expected vs. actual behavior
+      description: Describe what you expected to happen and what actually happened. Include any error output verbatim.
+    validations:
+      required: true
