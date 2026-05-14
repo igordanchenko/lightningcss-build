@@ -9,8 +9,8 @@
 - `npm run ci` — lint + test (what CI runs)
 
 Husky + lint-staged run `eslint --fix` and `prettier --write` on commit;
-commitlint enforces Conventional Commits with `subject-exclamation-mark`
-disallowed. Releases go through semantic-release.
+commitlint enforces Conventional Commits. Releases go through semantic-release
+with the `conventionalcommits` preset.
 
 Publishing uses npm **OIDC Trusted Publishing** — the `id-token: write`
 permission in `release.yml` is what authorizes the registry, not an `NPM_TOKEN`
