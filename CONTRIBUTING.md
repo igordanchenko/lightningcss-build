@@ -60,12 +60,8 @@ Commits must follow
 [Conventional Commits](https://www.conventionalcommits.org/). `commitlint` runs
 on every commit via Husky and will reject messages that don't conform.
 
-A few local conventions:
-
-- No `!` in the subject. Breaking changes go in a `BREAKING CHANGE:` footer, not
-  as `feat!:` in the subject. `commitlint` enforces this.
-- Prefer narrow, focused commits — semantic-release derives the version bump and
-  changelog entry from each commit's type and body.
+Prefer narrow, focused commits — semantic-release derives the version bump and
+changelog entry from each commit's type and body.
 
 Common types: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `ci`, `build`.
 
