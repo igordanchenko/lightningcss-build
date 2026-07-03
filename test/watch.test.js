@@ -237,6 +237,31 @@ describe("watch", () => {
     await watcher.shutdown();
   });
 
+  test("deleted entry re-enters the watch set when recreated", async () => {
+    const dir = await createTmp();
+    await writeFiles(dir, {
+      "src/a.css": `.a { color: red; }\n`,
+    });
+
+    const watcher = startWatcher(["src/a.css"], { cwd: dir });
+    await watcher.waitForLine("ready", { timeout: INITIAL_TIMEOUT });
+
+    await rm(join(dir, "src/a.css"));
+    await watcher.waitFor((out) => out.includes(`removed ${join("dist", "a.css")}`), {
+      timeout: REBUILD_TIMEOUT,
+    });
+
+    const beforeFix = watcher.stdout.length;
+    await writeFile(join(dir, "src/a.css"), `.a { color: #00f; }\n`);
+    await waitBuilt(watcher, join("src", "a.css"), join("dist", "a.css"), {
+      since: beforeFix,
+      timeout: REBUILD_TIMEOUT,
+    });
+    expect(await readText(dir, "dist/a.css")).toContain("#00f");
+
+    await watcher.shutdown();
+  });
+
   test("new file under inputDir is ignored (entries are fixed at startup)", async () => {
     const dir = await createTmp();
     await writeFiles(dir, {

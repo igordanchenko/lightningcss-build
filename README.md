@@ -133,7 +133,8 @@ not trigger a rebuild — re-save the importing entry to pick them up.
 
 The set of entries is fixed at startup. Creating a new file that matches an
 entry glob does not add it to the watch set; restart `lightningcss-build` to
-pick up new entries.
+pick up new entries. Deleting an entry removes its output; recreating the same
+file later (e.g. via `git checkout`) re-registers it and rebuilds.
 
 ## Browserslist
 

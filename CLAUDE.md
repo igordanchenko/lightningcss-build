@@ -65,11 +65,14 @@ editing:
   consistent. Failed rebuilds merge `error.dependencies` (the files read before
   the failure, including the missing one) into the entry's dep set, so creating
   a missing import triggers the recovery rebuild.
-- **Affected-entry computation** on change: walk the state map and collect
-  entries where `entry === path || dependencies.has(path)`. Do not shortcut to
-  "rebuild everything".
+- **Affected-entry computation** on change: the path itself if it's an original
+  entry (`entrySet`), plus every entry whose `dependencies` contain it. Do not
+  shortcut to "rebuild everything".
 - **Entry set is fixed at startup.** New files that match an entry glob are
-  ignored; users restart to pick them up. There is no runtime pattern matcher.
+  ignored; users restart to pick them up. There is no runtime pattern matcher. A
+  deleted-then-recreated _original_ entry is the one exception: its state record
+  is dropped on unlink, but the path stays in `entrySet` and re-enters the watch
+  set on the next add/change event.
 - **External deps** (files `@import`-ed from outside `inputDir`) are bundled
   normally but **not watched** — `chokidar` only watches `inputDir`. Editing an
   external partial does not trigger a rebuild; the user re-saves the importer.
