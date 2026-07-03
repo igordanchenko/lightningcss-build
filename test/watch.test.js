@@ -166,6 +166,32 @@ describe("watch", () => {
     await watcher.shutdown();
   });
 
+  test("previously-built entry recovers when a newly-added missing import is created", async () => {
+    const dir = await createTmp();
+    await writeFiles(dir, {
+      "src/a.css": `.a { color: red; }\n`,
+    });
+
+    const watcher = startWatcher(["src/a.css"], { cwd: dir });
+    await watcher.waitForLine("ready", { timeout: INITIAL_TIMEOUT });
+
+    const beforeErr = watcher.stderr.length;
+    await writeFile(join(dir, "src/a.css"), `@import "./missing.css";\n.a { color: #00f; }\n`);
+    await watcher.waitFor((_, err) => err.slice(beforeErr).includes("✗"), {
+      timeout: REBUILD_TIMEOUT,
+    });
+
+    const beforeFix = watcher.stdout.length;
+    await writeFile(join(dir, "src/missing.css"), `:root { --fg: #111; }\n`);
+    await waitBuilt(watcher, join("src", "a.css"), join("dist", "a.css"), {
+      since: beforeFix,
+      timeout: REBUILD_TIMEOUT,
+    });
+    expect(await readText(dir, "dist/a.css")).toContain("#00f");
+
+    await watcher.shutdown();
+  });
+
   test("deleting a file that is both an entry and a dependency rebuilds its importers", async () => {
     const dir = await createTmp();
     await writeFiles(dir, {

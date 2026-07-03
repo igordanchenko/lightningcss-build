@@ -60,8 +60,11 @@ The watch implementation has several invariants worth understanding before
 editing:
 
 - **State map**: `Map<entryPath, { outputPath, dependencies: Set }>`. Every
-  entry has a record, even failed ones (with `outputPath: null`) — this keeps
-  unlink bookkeeping consistent.
+  entry has a record, even failed ones (`outputPath` from the last successful
+  build, or `null` if there never was one) — this keeps unlink bookkeeping
+  consistent. Failed rebuilds merge `error.dependencies` (the files read before
+  the failure, including the missing one) into the entry's dep set, so creating
+  a missing import triggers the recovery rebuild.
 - **Affected-entry computation** on change: walk the state map and collect
   entries where `entry === path || dependencies.has(path)`. Do not shortcut to
   "rebuild everything".
