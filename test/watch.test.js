@@ -166,6 +166,30 @@ describe("watch", () => {
     await watcher.shutdown();
   });
 
+  test("deleting a file that is both an entry and a dependency rebuilds its importers", async () => {
+    const dir = await createTmp();
+    await writeFiles(dir, {
+      "src/styles.css": `@import "./vars.css";\n.app { color: var(--fg); }\n`,
+      "src/vars.css": `:root { --fg: #111; }\n`,
+    });
+
+    const watcher = startWatcher(["src/styles.css", "src/vars.css"], { cwd: dir });
+    await watcher.waitForLine("ready", { timeout: INITIAL_TIMEOUT });
+
+    const beforeErr = watcher.stderr.length;
+    await rm(join(dir, "src/vars.css"));
+    await watcher.waitFor((out) => out.includes(`removed ${join("dist", "vars.css")}`), {
+      timeout: REBUILD_TIMEOUT,
+    });
+    // The importer rebuilds and surfaces the now-broken @import.
+    await watcher.waitFor((_, err) => err.slice(beforeErr).includes("✗"), {
+      timeout: REBUILD_TIMEOUT,
+    });
+    expect(watcher.stderr.slice(beforeErr)).toContain(join("src", "styles.css"));
+
+    await watcher.shutdown();
+  });
+
   test("deleting a known entry removes its output", async () => {
     const dir = await createTmp();
     await writeFiles(dir, {

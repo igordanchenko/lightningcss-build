@@ -81,8 +81,9 @@ editing:
   partial that touches several entries). `flushing` is a single-flight lock so
   concurrent flushes coalesce onto the in-flight one.
 - **Unlink semantics**: deleting a tracked entry removes its output file.
-  Deleting a non-entry file that's a dependency triggers rebuilds of its
-  importers (lightningcss will then report the missing @import).
+  Deleting any file that's a dependency — including a file that is also an entry
+  — triggers rebuilds of its importers (lightningcss will then report the
+  missing @import).
 - **Shutdown**: signal handling lives in `bin/cli.js` — it installs a
   `SIGINT`/`SIGTERM` → `AbortController.abort()` bridge before any async work
   and passes `signal` into `watch()`. The watcher wires the signal's `abort`
