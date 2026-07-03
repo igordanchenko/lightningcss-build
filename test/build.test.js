@@ -65,6 +65,32 @@ describe("build", () => {
     expect(existsSync(join(dir, "dist/b.css"))).toBe(true);
   });
 
+  test("glob pattern written with native path separators matches", async () => {
+    const dir = await createTmp();
+    await writeFiles(dir, {
+      "src/themes/dark.css": `.dark { color: red; }\n`,
+      "src/themes/light.css": `.light { color: green; }\n`,
+    });
+
+    // join() produces backslash separators on Windows — tinyglobby would treat
+    // them as escape characters without normalization.
+    const { code } = await runCli([join("src", "themes", "*.css")], { cwd: dir });
+    expect(code).toBe(0);
+    expect(existsSync(join(dir, "dist/themes/dark.css"))).toBe(true);
+    expect(existsSync(join(dir, "dist/themes/light.css"))).toBe(true);
+  });
+
+  test("default pattern works with a nested -i written with native separators", async () => {
+    const dir = await createTmp();
+    await writeFiles(dir, {
+      "lib/css/a.css": `.a { color: red; }\n`,
+    });
+
+    const { code } = await runCli(["-i", join("lib", "css")], { cwd: dir });
+    expect(code).toBe(0);
+    expect(existsSync(join(dir, "dist/a.css"))).toBe(true);
+  });
+
   test("entry outside inputDir exits 2", async () => {
     const dir = await createTmp();
     await writeFiles(dir, {

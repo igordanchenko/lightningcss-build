@@ -131,9 +131,12 @@ is not under dir Y" or "glob never matches anything":
   (backslashes on Windows). This is the canonical form for state-map keys,
   `inputDir` comparisons, logger relativization, and
   `assertEntriesUnderInputDir`.
-- **`tinyglobby`** — returns absolute paths with **forward slashes** even on
-  Windows. `lib/resolve.js` runs every glob match through `path.resolve()` so
-  downstream code sees one consistent separator.
+- **`tinyglobby`** — expects **forward slashes** in patterns (backslash is an
+  escape character) and returns absolute paths with forward slashes even on
+  Windows. `lib/resolve.js` converts at both boundaries: incoming patterns get
+  backslashes normalized to `/` on Windows before glob detection/matching, and
+  every glob match runs through `path.resolve()` so downstream code sees one
+  consistent separator.
 - **`chokidar`** event paths use native separators on Windows, matching
   `path.resolve()` output, so the state map's keys agree without conversion.
 
