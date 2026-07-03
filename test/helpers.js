@@ -36,6 +36,10 @@ export function runCli(args, { cwd }) {
     });
     let stdout = "";
     let stderr = "";
+    // Decode as a stream: naive Buffer concatenation corrupts a multibyte
+    // char (✓ ✗ →) that straddles a chunk boundary.
+    proc.stdout.setEncoding("utf8");
+    proc.stderr.setEncoding("utf8");
     proc.stdout.on("data", (c) => (stdout += c));
     proc.stderr.on("data", (c) => (stderr += c));
     proc.on("close", (code) => resolvePromise({ code, stdout, stderr }));
@@ -51,6 +55,10 @@ export function startWatcher(args, { cwd }) {
   let stderr = "";
   const listeners = [];
 
+  // Same multibyte-safe decoding as runCli — the watch tests' waitFor
+  // predicates match on ✓ ✗ → markers.
+  proc.stdout.setEncoding("utf8");
+  proc.stderr.setEncoding("utf8");
   proc.stdout.on("data", (chunk) => {
     stdout += chunk;
     for (const listener of [...listeners]) listener(stdout, stderr);
