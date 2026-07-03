@@ -77,6 +77,19 @@ describe("build", () => {
     expect(stderr).toContain("is not under input dir");
   });
 
+  test("output dir equal to input dir exits 2 without overwriting sources", async () => {
+    const dir = await createTmp();
+    const source = `.a { color: red; }\n`;
+    await writeFiles(dir, {
+      "src/a.css": source,
+    });
+
+    const { code, stderr } = await runCli(["-i", "src", "-o", "src", "src/a.css"], { cwd: dir });
+    expect(code).toBe(2);
+    expect(stderr).toContain("would be overwritten by its own output");
+    expect(await readText(dir, "src/a.css")).toBe(source);
+  });
+
   test("@import-only partials are not emitted as standalone outputs", async () => {
     const dir = await createTmp();
     await writeFiles(dir, {
