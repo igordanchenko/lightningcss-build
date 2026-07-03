@@ -92,7 +92,18 @@ for (const stream of [process.stdout, process.stderr]) {
   });
 }
 
-const code = await main();
+// main() handles all user-facing errors internally and returns a code; this
+// catch is the backstop for unexpected rejections (e.g. a missing or corrupt
+// package.json during the version lookup). Funnel those through the same
+// flush-and-exit path below instead of letting an unhandled rejection kill the
+// process and skip the flush.
+let code;
+try {
+  code = await main();
+} catch (err) {
+  code = err?.code === 2 ? 2 : 1;
+  process.stderr.write(`${err?.message ?? err}\n`);
+}
 
 // Flush queued stream writes, then exit hard. process.exit() alone truncates
 // piped output; plain exitCode + natural loop drain preserves it but leaves
