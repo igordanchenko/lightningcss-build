@@ -19,63 +19,90 @@ Options:
   -h, --help               Show help
 `;
 
-let values;
-let positionals;
+/** @returns {Promise<number>} exit code */
+async function main() {
+  let values;
+  let positionals;
 
-try {
-  ({ values, positionals } = parseArgs({
-    allowPositionals: true,
-    options: {
-      "input-dir": { type: "string", short: "i", default: "src" },
-      "output-dir": { type: "string", short: "o", default: "dist" },
-      watch: { type: "boolean", short: "w", default: false },
-      silent: { type: "boolean", short: "s", default: false },
-      version: { type: "boolean", short: "v", default: false },
-      help: { type: "boolean", short: "h", default: false },
-    },
-  }));
-} catch (err) {
-  process.stderr.write(`error: ${err.message}\n`);
-  process.exit(2);
-}
-
-if (values.help) {
-  process.stdout.write(HELP);
-  process.exit(0);
-}
-
-const pkgPath = resolve(dirname(fileURLToPath(import.meta.url)), "../package.json");
-const { version } = JSON.parse(await readFile(pkgPath, "utf8"));
-
-if (values.version) {
-  process.stdout.write(`${version}\n`);
-  process.exit(0);
-}
-
-const patterns = positionals.length > 0 ? positionals : [`${values["input-dir"]}/*.css`];
-
-const options = {
-  patterns,
-  inputDir: resolve(values["input-dir"]),
-  outputDir: resolve(values["output-dir"]),
-  silent: values.silent,
-  version,
-};
-
-try {
-  if (values.watch) {
-    // Own signal handling here, not inside watch(). Listeners attach before
-    // watch() runs any awaits, so aborts during prepare() or the initial
-    // rebuild pass are absorbed into the AbortController and exit cleanly
-    // instead of hitting Node's default signal-kill.
-    const controller = new AbortController();
-    process.once("SIGINT", () => controller.abort());
-    process.once("SIGTERM", () => controller.abort());
-    const { watch } = await import("../lib/watch.js");
-    process.exit(await watch({ ...options, signal: controller.signal }));
+  try {
+    ({ values, positionals } = parseArgs({
+      allowPositionals: true,
+      options: {
+        "input-dir": { type: "string", short: "i", default: "src" },
+        "output-dir": { type: "string", short: "o", default: "dist" },
+        watch: { type: "boolean", short: "w", default: false },
+        silent: { type: "boolean", short: "s", default: false },
+        version: { type: "boolean", short: "v", default: false },
+        help: { type: "boolean", short: "h", default: false },
+      },
+    }));
+  } catch (err) {
+    process.stderr.write(`error: ${err.message}\n`);
+    return 2;
   }
-  process.exit(await build(options));
-} catch (err) {
-  process.stderr.write(`${err.message}\n`);
-  process.exit(err.code === 2 ? 2 : 1);
+
+  if (values.help) {
+    process.stdout.write(HELP);
+    return 0;
+  }
+
+  const pkgPath = resolve(dirname(fileURLToPath(import.meta.url)), "../package.json");
+  const { version } = JSON.parse(await readFile(pkgPath, "utf8"));
+
+  if (values.version) {
+    process.stdout.write(`${version}\n`);
+    return 0;
+  }
+
+  const patterns = positionals.length > 0 ? positionals : [`${values["input-dir"]}/*.css`];
+
+  const options = {
+    patterns,
+    inputDir: resolve(values["input-dir"]),
+    outputDir: resolve(values["output-dir"]),
+    silent: values.silent,
+    version,
+  };
+
+  try {
+    if (values.watch) {
+      // Own signal handling here, not inside watch(). Listeners attach before
+      // watch() runs any awaits, so aborts during prepare() or the initial
+      // rebuild pass are absorbed into the AbortController and exit cleanly
+      // instead of hitting Node's default signal-kill.
+      const controller = new AbortController();
+      process.once("SIGINT", () => controller.abort());
+      process.once("SIGTERM", () => controller.abort());
+      const { watch } = await import("../lib/watch.js");
+      return await watch({ ...options, signal: controller.signal });
+    }
+    return await build(options);
+  } catch (err) {
+    process.stderr.write(`${err.message}\n`);
+    return err.code === 2 ? 2 : 1;
+  }
 }
+
+// A pipe consumer that exits early (e.g. `... | head`) closes the read end;
+// without a handler the resulting async EPIPE becomes an uncaught exception
+// that overrides the exit code.
+for (const stream of [process.stdout, process.stderr]) {
+  stream.on("error", (err) => {
+    if (err.code !== "EPIPE") throw err;
+  });
+}
+
+const code = await main();
+
+// Flush queued stream writes, then exit hard. process.exit() alone truncates
+// piped output; plain exitCode + natural loop drain preserves it but leaves
+// the exit hostage to leaked handles (chokidar's awaitWriteFinish poll timers
+// survive close() and keep the loop alive while a watched file is written to).
+// The write callbacks fire once each stream's buffer has drained — or
+// immediately if the stream already errored — so this gets both.
+let pendingFlushes = 2;
+function exitWhenFlushed() {
+  if (--pendingFlushes === 0) process.exit(code);
+}
+process.stdout.write("", exitWhenFlushed);
+process.stderr.write("", exitWhenFlushed);
