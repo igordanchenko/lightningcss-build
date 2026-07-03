@@ -264,6 +264,32 @@ describe("build", () => {
     expect(existsSync(join(dir, "dist/a.css"))).toBe(true);
   });
 
+  test("--output-dir writes outputs to a custom directory, structure preserved", async () => {
+    const dir = await createTmp();
+    await writeFiles(dir, {
+      "styles/index.css": `.a { color: red; }\n`,
+      "styles/components/button.css": `.btn { color: blue; }\n`,
+    });
+
+    const { code } = await runCli(["-i", "styles", "-o", join("build", "css"), "styles/**/*.css"], { cwd: dir });
+    expect(code).toBe(0);
+    expect(await readText(dir, "build/css/index.css")).toBe(".a{color:red}");
+    expect(existsSync(join(dir, "build/css/components/button.css"))).toBe(true);
+    expect(existsSync(join(dir, "dist"))).toBe(false);
+  });
+
+  test("unknown option exits 2 with an error message", async () => {
+    const dir = await createTmp();
+    await writeFiles(dir, {
+      "src/a.css": `.a { color: red; }\n`,
+    });
+
+    const { code, stderr } = await runCli(["--no-such-flag", "src/a.css"], { cwd: dir });
+    expect(code).toBe(2);
+    expect(stderr).toContain("error:");
+    expect(existsSync(join(dir, "dist"))).toBe(false);
+  });
+
   test("--version: prints version from package.json", async () => {
     const dir = await createTmp();
     const { code, stdout } = await runCli(["--version"], { cwd: dir });
