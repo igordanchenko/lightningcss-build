@@ -1,9 +1,19 @@
-# lightningcss-build
+<p align="center">
+  <img alt="" src=".github/assets/logo.webp" width="180" height="180" />
+</p>
+
+<h1 align="center">
+  lightningcss-build
+</h1>
+
+<div align="center">
 
 [![Package](https://img.shields.io/npm/v/lightningcss-build.svg?color=blue)](https://www.npmjs.com/package/lightningcss-build)
 [![Node](https://img.shields.io/node/v/lightningcss-build.svg?color=blue)](https://www.npmjs.com/package/lightningcss-build)
 [![CI](https://img.shields.io/github/actions/workflow/status/igordanchenko/lightningcss-build/ci.yml?branch=main&label=CI&color=blue)](https://github.com/igordanchenko/lightningcss-build/actions/workflows/ci.yml)
 [![License](https://img.shields.io/npm/l/lightningcss-build.svg?color=blue)](https://github.com/igordanchenko/lightningcss-build/blob/main/LICENSE)
+
+</div>
 
 An opinionated CSS bundler for libraries, built on the
 [`lightningcss`](https://lightningcss.dev/) Node API.
