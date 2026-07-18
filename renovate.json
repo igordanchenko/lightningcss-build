@@ -2,7 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", ":semanticCommitTypeAll(chore)"],
   "minimumReleaseAge": "3 days",
-  "internalChecksFilter": "strict",
   "packageRules": [
     {
       "description": "Auto-merge every minor/patch update once CI passes; majors still open a PR for review",
