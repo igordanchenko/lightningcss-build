@@ -2,7 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices", ":semanticCommitTypeAll(chore)", ":automergeMinor", ":automergeDigest"],
   "timezone": "America/Los_Angeles",
-  "minimumReleaseAge": "3 days",
   "packageRules": [
     {
       "description": "Group non-major GitHub Actions bumps into a single PR",
