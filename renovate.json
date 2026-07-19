@@ -1,13 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", ":semanticCommitTypeAll(chore)"],
+  "extends": ["config:best-practices", ":semanticCommitTypeAll(chore)", ":automergeMinor", ":automergeDigest"],
+  "timezone": "America/Los_Angeles",
   "minimumReleaseAge": "3 days",
   "packageRules": [
-    {
-      "description": "Auto-merge every minor/patch update once CI passes; majors still open a PR for review",
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true
-    },
     {
       "description": "Group non-major GitHub Actions bumps into a single PR",
       "matchManagers": ["github-actions"],
@@ -20,10 +16,5 @@
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "groupName": "devDependencies (non-major)"
     }
-  ],
-  "lockFileMaintenance": {
-    "enabled": true,
-    "automerge": true,
-    "schedule": ["before 6am on monday"]
-  }
+  ]
 }
