@@ -36,3 +36,13 @@ jobs:
 
       - name: Lint & Test
         run: npm run ci
+
+  ci:
+    name: CI
+    if: always()
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify matrix succeeded
+        if: needs.test.result != 'success'
+        run: exit 1
