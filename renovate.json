@@ -1,19 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices", ":semanticCommitTypeAll(chore)", ":automergeMinor", ":automergeDigest"],
-  "timezone": "America/Los_Angeles",
-  "packageRules": [
-    {
-      "description": "Group non-major GitHub Actions bumps into a single PR",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "groupName": "github-actions"
-    },
-    {
-      "description": "Batch all non-major devDependency updates into a single PR",
-      "matchDepTypes": ["devDependencies"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "groupName": "devDependencies (non-major)"
-    }
-  ]
+  "extends": ["github>igordanchenko/renovate:lib"]
 }
