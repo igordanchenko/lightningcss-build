@@ -43,14 +43,9 @@ jobs:
         run: npm audit signatures
 
       - name: Prune package.json
-        run: npm pkg delete scripts devDependencies
+        uses: igordanchenko/actions/prune-package-json@v1
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HUSKY: 0
-        run: |
-          npx \
-            --package semantic-release@25 \
-            --package conventional-changelog-conventionalcommits@9 \
-            semantic-release
+        uses: igordanchenko/actions/semantic-release@v1
