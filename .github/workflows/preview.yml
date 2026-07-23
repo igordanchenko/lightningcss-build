@@ -34,7 +34,7 @@ jobs:
         run: npm audit signatures
 
       - name: Prune package.json
-        run: npm pkg delete scripts devDependencies
+        uses: igordanchenko/actions/prune-package-json@d460545dc978b327e8d2b2cfe0acb86075a660c1 # v1.3.2
 
       - name: Publish preview
-        run: npx pkg-pr-new publish --no-template
+        run: npx --yes -- pkg-pr-new publish --no-template
