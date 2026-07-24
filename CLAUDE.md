@@ -6,7 +6,6 @@
 - `npx vitest run test/build.test.js` — run a single test file
 - `npx vitest run -t "name substring"` — run tests by name
 - `npm run lint` — ESLint (flat config, `@eslint/js` recommended + Node globals)
-- `npm run ci` — lint + test (what CI runs)
 
 Husky + lint-staged run `eslint --fix` and `prettier --write` on commit;
 commitlint enforces Conventional Commits. Releases go through semantic-release

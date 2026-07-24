@@ -41,11 +41,11 @@ npm install
 
 ### Scripts
 
-| Script         | Purpose                                  |
-| -------------- | ---------------------------------------- |
-| `npm test`     | Run the Vitest suite                     |
-| `npm run lint` | Run ESLint                               |
-| `npm run ci`   | Lint + test (what CI runs on every push) |
+| Script         | Purpose              |
+| -------------- | -------------------- |
+| `npm test`     | Run the Vitest suite |
+| `npm run lint` | Run ESLint           |
+| `npm run ci`   | Lint + test          |
 
 To run a single test file or match by name:
 

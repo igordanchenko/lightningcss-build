@@ -27,10 +27,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint & Test
-        run: npm run ci
+      - name: Lint
+        run: npm run lint
 
-      - name: Verify dependency signatures
+      - name: Test
+        run: npm run test
+
+      - name: Audit signatures
         run: npm audit signatures
 
       - name: Prune package.json
