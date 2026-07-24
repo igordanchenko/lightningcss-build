@@ -4,15 +4,15 @@ on:
   push:
     branches: [main, next]
 
-concurrency:
-  group: release
-
 permissions:
   contents: write
   id-token: write
   issues: write
   discussions: write
   pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}
 
 jobs:
   release:
