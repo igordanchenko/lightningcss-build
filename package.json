@@ -12,16 +12,13 @@
     "bin",
     "lib"
   ],
-  "homepage": "https://github.com/igordanchenko/lightningcss-build",
-  "funding": "https://github.com/sponsors/igordanchenko",
-  "bugs": "https://github.com/igordanchenko/lightningcss-build/issues",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/igordanchenko/lightningcss-build.git"
-  },
   "engines": {
     "node": ">=22"
   },
+  "repository": "github:igordanchenko/lightningcss-build",
+  "homepage": "https://github.com/igordanchenko/lightningcss-build",
+  "bugs": "https://github.com/igordanchenko/lightningcss-build/issues",
+  "funding": "https://github.com/sponsors/igordanchenko",
   "scripts": {
     "prepare": "husky",
     "lint": "eslint",
