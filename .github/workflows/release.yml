@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
@@ -44,9 +44,9 @@ jobs:
         run: npm audit signatures
 
       - name: Prune package.json
-        uses: igordanchenko/actions/prune-package-json@v1
+        uses: igordanchenko/actions/prune-package-json@6007abe989a1243da59096371e23ce02e4566f76 # v1.3.3
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        uses: igordanchenko/actions/semantic-release@v1
+        uses: igordanchenko/actions/semantic-release@6007abe989a1243da59096371e23ce02e4566f76 # v1.3.3
