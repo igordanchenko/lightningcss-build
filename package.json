@@ -2,6 +2,10 @@
   "name": "lightningcss-build",
   "version": "0.0.0-semantic-release",
   "description": "Opinionated CSS build tool for libraries, powered by lightningcss",
+  "repository": "github:igordanchenko/lightningcss-build",
+  "homepage": "https://github.com/igordanchenko/lightningcss-build",
+  "bugs": "https://github.com/igordanchenko/lightningcss-build/issues",
+  "funding": "https://github.com/sponsors/igordanchenko",
   "author": "Igor Danchenko",
   "license": "MIT",
   "type": "module",
@@ -15,10 +19,6 @@
   "engines": {
     "node": ">=22"
   },
-  "repository": "github:igordanchenko/lightningcss-build",
-  "homepage": "https://github.com/igordanchenko/lightningcss-build",
-  "bugs": "https://github.com/igordanchenko/lightningcss-build/issues",
-  "funding": "https://github.com/sponsors/igordanchenko",
   "scripts": {
     "prepare": "husky",
     "lint": "eslint",
