@@ -192,6 +192,33 @@ describe("watch", () => {
     await watcher.shutdown();
   });
 
+  test("entry whose output could not be written recovers when a partial is edited", async () => {
+    const dir = await createTmp();
+    await writeFiles(dir, {
+      "src/a.css": `@import "./vars.css";\n.a { color: var(--fg); }\n`,
+      "src/vars.css": `:root { --fg: #111; }\n`,
+      // The output path is a plain file, so the bundle succeeds but the write
+      // fails — the entry's dep graph must survive that.
+      dist: `not a directory\n`,
+    });
+
+    const watcher = startWatcher(["src/a.css"], { cwd: dir });
+    await watcher.waitFor((_, err) => err.includes("✗"), { timeout: INITIAL_TIMEOUT });
+    await watcher.waitForLine("ready", { timeout: INITIAL_TIMEOUT });
+
+    await rm(join(dir, "dist"));
+
+    const beforeFix = watcher.stdout.length;
+    await writeFile(join(dir, "src/vars.css"), `:root { --fg: #333; }\n`);
+    await waitBuilt(watcher, join("src", "a.css"), join("dist", "a.css"), {
+      since: beforeFix,
+      timeout: REBUILD_TIMEOUT,
+    });
+    expect(await readText(dir, "dist/a.css")).toContain("#333");
+
+    await watcher.shutdown();
+  });
+
   test("deleting a file that is both an entry and a dependency rebuilds its importers", async () => {
     const dir = await createTmp();
     await writeFiles(dir, {
