@@ -41,11 +41,12 @@ npm install
 
 ### Scripts
 
-| Script         | Purpose              |
-| -------------- | -------------------- |
-| `npm test`     | Run the Vitest suite |
-| `npm run lint` | Run ESLint           |
-| `npm run ci`   | Lint + test          |
+| Script           | Purpose              |
+| ---------------- | -------------------- |
+| `npm test`       | Run the Vitest suite |
+| `npm run lint`   | Lint with oxlint     |
+| `npm run format` | Format with oxfmt    |
+| `npm run ci`     | Lint + test          |
 
 To run a single test file or match by name:
 
@@ -67,7 +68,7 @@ Common types: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `ci`, `build`.
 
 ### Code style
 
-- ESLint and Prettier run on staged files via `lint-staged`. You normally don't
+- oxlint and oxfmt run on staged files via `lint-staged`. You normally don't
   need to run them manually — the pre-commit hook formats and fixes on its own.
 - If a hook fails, fix the reported issue and re-stage rather than bypassing
   with `--no-verify`.

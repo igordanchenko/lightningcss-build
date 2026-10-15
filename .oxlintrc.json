@@ -1,0 +1,7 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["oxc", "unicorn", "vitest"],
+  "categories": {
+    "correctness": "error"
+  }
+}

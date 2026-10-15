@@ -61,10 +61,12 @@ export function startWatcher(args, { cwd }) {
   proc.stderr.setEncoding("utf8");
   proc.stdout.on("data", (chunk) => {
     stdout += chunk;
+    // oxlint-disable-next-line unicorn/no-useless-spread -- iterate over a snapshot: listeners remove themselves mid-loop
     for (const listener of [...listeners]) listener(stdout, stderr);
   });
   proc.stderr.on("data", (chunk) => {
     stderr += chunk;
+    // oxlint-disable-next-line unicorn/no-useless-spread -- iterate over a snapshot: listeners remove themselves mid-loop
     for (const listener of [...listeners]) listener(stdout, stderr);
   });
 

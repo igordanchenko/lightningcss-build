@@ -5,11 +5,17 @@
 - `npm test` — run the vitest suite (`vitest run`)
 - `npx vitest run test/build.test.js` — run a single test file
 - `npx vitest run -t "name substring"` — run tests by name
-- `npm run lint` — ESLint (flat config, `@eslint/js` recommended + Node globals)
+- `npm run lint` — oxlint (`.oxlintrc.json`: oxlint defaults — the `correctness`
+  category as errors with the oxc, unicorn, and vitest plugins)
 
-Husky + lint-staged run `eslint --fix` and `prettier --write` on commit;
-commitlint enforces Conventional Commits. Releases go through semantic-release
-with the `conventionalcommits` preset.
+Husky + lint-staged run `oxlint --fix` and `oxfmt` on commit; commitlint
+enforces Conventional Commits. Releases go through semantic-release with the
+`conventionalcommits` preset.
+
+Formatting is enforced only by the pre-commit hook — not by `npm run ci` and not
+by the CI workflows. Don't add an `oxfmt --check` step to CI: a routine oxfmt
+version bump can change formatting output and fail CI on otherwise unchanged
+files.
 
 Publishing uses npm **OIDC Trusted Publishing** — the `id-token: write`
 permission in `release.yml` is what authorizes the registry, not an `NPM_TOKEN`
