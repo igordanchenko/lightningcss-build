@@ -6,3 +6,6 @@ node_modules/
 
 # WebStorm
 .idea/
+
+# macOS
+.DS_Store
