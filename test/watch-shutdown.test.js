@@ -1,5 +1,7 @@
 import { join } from "node:path";
+
 import { describe, expect, test, vi } from "vitest";
+
 import { createTmp, writeFiles } from "./helpers.js";
 
 // The rest of the watch suite spawns the real CLI, but a watcher.close()

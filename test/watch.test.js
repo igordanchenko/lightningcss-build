@@ -1,7 +1,9 @@
 import { existsSync } from "node:fs";
 import { rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+
 import { describe, expect, test } from "vitest";
+
 import { createTmp, readText, sleep, startWatcher, writeFiles } from "./helpers.js";
 
 const INITIAL_TIMEOUT = 5_000;

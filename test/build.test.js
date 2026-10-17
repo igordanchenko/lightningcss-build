@@ -1,7 +1,9 @@
 import { existsSync } from "node:fs";
 import { stat } from "node:fs/promises";
 import { join } from "node:path";
+
 import { describe, expect, test } from "vitest";
+
 import pkg from "../package.json" with { type: "json" };
 import { createTmp, readText, runCli, writeFiles } from "./helpers.js";
 
