@@ -82,15 +82,15 @@ editing:
   normally but **not watched** — `chokidar` only watches `inputDir`. Editing an
   external partial does not trigger a rebuild; the user re-saves the importer.
   This is documented in the README.
-- **Debouncing**: chokidar is configured with
-  `awaitWriteFinish: { stabilityThreshold: 50, pollInterval: 10 }` — without it,
-  chokidar's hardcoded 50ms `_emit` throttle silently drops a follow-up change
-  to the same path that lands inside the window (the bug behind the original
-  "parse error preserves prior output" Linux/Windows CI flake). After chokidar,
-  events go through a `pending` Map keyed by path (last-event-wins), flushed
-  30ms after the last event — this coalesces _across paths_ (e.g., a saved
-  partial that touches several entries). `flushing` is a single-flight lock so
-  concurrent flushes coalesce onto the in-flight one.
+- **Debouncing**: chokidar runs without `awaitWriteFinish`. chokidar 6 still
+  throttles `change` events per path for 50ms, but replays the newest differing
+  change when the window closes (chokidar 5 silently dropped it — the bug behind
+  the original "parse error preserves prior output" Linux/Windows CI flake,
+  which `awaitWriteFinish` used to work around). Removing it was stress-tested
+  across the full CI matrix. Events go through a `pending` Map keyed by path
+  (last-event-wins), flushed 30ms after the last event — this coalesces _across
+  paths_ (e.g., a saved partial that touches several entries). `flushing` is a
+  single-flight lock so concurrent flushes coalesce onto the in-flight one.
 - **Unlink semantics**: deleting a tracked entry removes its output file.
   Deleting any file that's a dependency — including a file that is also an entry
   — triggers rebuilds of its importers (lightningcss will then report the
